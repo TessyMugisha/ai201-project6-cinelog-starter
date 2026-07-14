@@ -15,6 +15,12 @@ class AlreadyInWatchlistError(Exception):
     pass
 
 
+class NotInWatchlistError(Exception):
+    """Raised when a film is not in the user's watchlist."""
+
+    pass
+
+
 def add_to_watchlist(user_id, film_id):
     """
     Add a film to a user's watchlist.
@@ -48,7 +54,7 @@ def add_to_watchlist(user_id, film_id):
 
 def get_watchlist(user_id):
     """
-    Return all films on a user's watchlist.
+    Return all films on a user's watchlist, sorted by date added, newest first, matching how get_collection describes itself..
 
     Args:
         user_id (str): UUID of the user.
@@ -58,8 +64,7 @@ def get_watchlist(user_id):
     """
     entries = (
         WatchlistEntry.query.filter_by(user_id=user_id)
-        .join(Film)
-        .order_by(Film.title.asc())
+        .order_by(WatchlistEntry.date_added.desc())
         .all()
     )
 
